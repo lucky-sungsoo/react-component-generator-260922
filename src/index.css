@@ -1,0 +1,79 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+
+  /* chassis: the beige machine housing the screen */
+  --chassis: #dad2bc;
+  --chassis-deep: #b7ad8f;
+  --chassis-raised: #e8e2d0;
+  --chassis-ink: #2a2418;
+  --chassis-ink-muted: #6b6046;
+
+  /* screen: the dark CRT glass set into the chassis */
+  --screen: #12160f;
+  --screen-raised: #1b2116;
+  --screen-line: #3a4530;
+  --screen-text: #d8e8ce;
+  --screen-text-muted: #85987a;
+
+  /* phosphor signal colors, borrowed from real terminal indicator LEDs */
+  --amber: #ffb000;
+  --amber-dim: #c98600;
+  --green: #4ce86b;
+  --green-dim: #2e9e48;
+  --red: #ff5c4d;
+  --red-dim: #b23a2f;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  --font-display: 'Galmuri11', 'Galmuri9', var(--font-mono);
+  --font-mono:
+    'JetBrains Mono', ui-monospace, 'SFMono-Regular', Consolas, 'Malgun Gothic',
+    'Apple SD Gothic Neo', sans-serif;
+
+  --shadow-hard-sm: 2px 2px 0 var(--chassis-ink);
+  --shadow-hard: 3px 3px 0 var(--chassis-ink);
+  --shadow-hard-screen: 3px 3px 0 #000000;
+}
+
+body {
+  font-family: var(--font-mono);
+  background: var(--chassis);
+  color: var(--chassis-ink);
+  min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: var(--amber);
+  color: var(--chassis-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
