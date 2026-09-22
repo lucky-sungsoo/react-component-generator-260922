@@ -1,8 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { GeneratedComponent, Provider } from '../types';
+import { loadFromStorage, saveToStorage, reviveComponents, STORAGE_KEYS } from '../utils/storage';
+import { addToHistory } from '../utils/promptHistory';
 
 interface UseComponentGeneratorReturn {
   components: GeneratedComponent[];
+  promptHistory: string[];
   isLoading: boolean;
   error: string | null;
   generate: (prompt: string, apiKey: string | undefined, provider: Provider) => Promise<void>;
@@ -11,9 +14,22 @@ interface UseComponentGeneratorReturn {
 }
 
 export function useComponentGenerator(): UseComponentGeneratorReturn {
-  const [components, setComponents] = useState<GeneratedComponent[]>([]);
+  const [components, setComponents] = useState<GeneratedComponent[]>(() =>
+    reviveComponents(loadFromStorage(STORAGE_KEYS.components, []))
+  );
+  const [promptHistory, setPromptHistory] = useState<string[]>(() =>
+    loadFromStorage(STORAGE_KEYS.promptHistory, [])
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.components, components);
+  }, [components]);
+
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.promptHistory, promptHistory);
+  }, [promptHistory]);
 
   const generate = useCallback(async (prompt: string, apiKey: string | undefined, provider: Provider) => {
     setIsLoading(true);
@@ -40,6 +56,7 @@ export function useComponentGenerator(): UseComponentGeneratorReturn {
       };
 
       setComponents((prev) => [newComponent, ...prev]);
+      setPromptHistory((prev) => addToHistory(prev, prompt));
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);
@@ -56,5 +73,5 @@ export function useComponentGenerator(): UseComponentGeneratorReturn {
     setComponents([]);
   }, []);
 
-  return { components, isLoading, error, generate, removeComponent, clearAll };
+  return { components, promptHistory, isLoading, error, generate, removeComponent, clearAll };
 }
